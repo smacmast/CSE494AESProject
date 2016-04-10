@@ -103,18 +103,120 @@ void PickKeyLength();
 string encrpyt(string);
 string decrypt(string);
 
+//TESTER FUNCTIONS TODO REMOVE BEFORE SUBMISSION
+void print();
+void fill();
+void test_ShiftRowFunctions();
+void test_MixColumnsFunctions();
+void test_SubBytesFunctions();
+void test_RotWordFunctions();
+void test_CipherFunctions();
+//END TESTER FUNCTIONS
+
 //AES Functions
 void KeyExpansion();
 
-void AddRoundKey(int round);
-void SubBytes();
-void ShiftRows();
-void MixColumns();
-void RotWord();
-void SubWord();
-void InvMixColumns();
-void InvShiftRows();
-void InvSubBytes();
+void AddRoundKey(int round);	//TODO
+void SubBytes();				//TODO
+void ShiftRows();				//COMPLETED
+void MixColumns();				//COMPLETED
+void RotWord();					//TODO
+void SubWord();					//TODO
+void InvMixColumns();			//COMPLETED
+void InvShiftRows();			//COMPLETED
+void InvSubBytes();				//TODO
+
+// The ShiftRows() function shifts the rows in the state to the left.
+// Each row is shifted with different offset.
+// Offset = Row number. So the first row is not shifted.
+void ShiftRows()
+{
+	byte temp;
+
+	// Shift first row 1 columns to left	
+	temp = state[1][0];
+	state[1][0] = state[1][1];
+	state[1][1] = state[1][2];
+	state[1][2] = state[1][3];
+	state[1][3] = temp;
+
+	// Shift second row 2 columns to left	
+	temp = state[2][0];
+	state[2][0] = state[2][2];
+	state[2][2] = temp;
+
+	temp = state[2][1];
+	state[2][1] = state[2][3];
+	state[2][3] = temp;
+
+	// Shift third row 3 columns to left
+	temp = state[3][0];
+	state[3][0] = state[3][3];
+	state[3][3] = state[3][2];
+	state[3][2] = state[3][1];
+	state[3][1] = temp;
+}
+
+// MixColumns function mixes the columns of the state matrix
+void MixColumns()
+{
+	byte Tmp, Tm, t;
+	for (int i = 0; i<4; i++)
+	{
+		t = state[0][i];
+		Tmp = state[0][i] ^ state[1][i] ^ state[2][i] ^ state[3][i];
+		Tm = state[0][i] ^ state[1][i]; Tm = xtime(Tm); state[0][i] ^= Tm ^ Tmp;
+		Tm = state[1][i] ^ state[2][i]; Tm = xtime(Tm); state[1][i] ^= Tm ^ Tmp;
+		Tm = state[2][i] ^ state[3][i]; Tm = xtime(Tm); state[2][i] ^= Tm ^ Tmp;
+		Tm = state[3][i] ^ t;			Tm = xtime(Tm); state[3][i] ^= Tm ^ Tmp;
+	}
+}
+
+//Undoes the MixColumns Operation
+void InvMixColumns(){
+	byte a, b, c, d;
+	for (int i = 0; i<4; i++) {
+		a = state[0][i];
+		b = state[1][i];
+		c = state[2][i];
+		d = state[3][i];
+
+		state[0][i] = Multiply(a, 0x0e) ^ Multiply(b, 0x0b) ^ Multiply(c, 0x0d) ^ Multiply(d, 0x09);
+		state[1][i] = Multiply(a, 0x09) ^ Multiply(b, 0x0e) ^ Multiply(c, 0x0b) ^ Multiply(d, 0x0d);
+		state[2][i] = Multiply(a, 0x0d) ^ Multiply(b, 0x09) ^ Multiply(c, 0x0e) ^ Multiply(d, 0x0b);
+		state[3][i] = Multiply(a, 0x0b) ^ Multiply(b, 0x0d) ^ Multiply(c, 0x09) ^ Multiply(d, 0x0e);
+	}
+}
+
+// The ShiftRows() function shifts the rows in the state to the Right.
+// Each row is shifted with different offset.
+// Offset = Row number. So the first row is not shifted.
+void InvShiftRows(){
+	byte temp;
+
+	//shift first row 1 columns to right	
+	temp = state[1][3];
+	state[1][3] = state[1][2];
+	state[1][2] = state[1][1];
+	state[1][1] = state[1][0];
+	state[1][0] = temp;
+
+	// shift second row 2 columns to right	
+	temp = state[2][0];
+	state[2][0] = state[2][2];
+	state[2][2] = temp;
+
+	temp = state[2][1];
+	state[2][1] = state[2][3];
+	state[2][3] = temp;
+
+	// shift third row 3 columns to Right
+	temp = state[3][0];
+	state[3][0] = state[3][1];
+	state[3][1] = state[3][2];
+	state[3][2] = state[3][3];
+	state[3][3] = temp;
+}
 
 //Function to determine the keylength used 128, 192 or 256 bits
 void PickKeyLength(){
@@ -149,5 +251,85 @@ void PickKeyLength(){
 void main(){
 	PickKeyLength();
 
+	test_ShiftRowFunctions();
+	test_MixColumnsFunctions();
+
 	system("Pause");
+}
+
+
+//-----------------------------------------TESTER FUNCTIONS-----------------------------------//
+//fills the state matrix for testing
+void fill(){
+	//testing shifts
+
+	char x = 'a';
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			x = x + 1;
+			state[i][j] = x;
+		}
+	}
+}
+
+//prints contents of state matrix
+void print(){
+
+	//print state
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			cout << "[" << state[i][j] << "]";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
+void test_ShiftRowFunctions(){
+	cout << "//-------Initial State Matrix-------//" << endl;
+	fill();
+	print();
+
+	ShiftRows();
+	cout << "post ShiftRows State Matrix: " << endl;
+
+	print();
+	InvShiftRows();
+	cout << "Post InvShiftRows State Matrix: " << endl;
+	print();
+}
+
+void test_MixColumnsFunctions(){
+	cout << "//-------Initial State Matrix-------//" << endl;
+	fill();
+	print();
+
+	MixColumns();
+	cout << "post MixColumns State Matrix: " << endl;
+
+	print();
+	InvMixColumns();
+	cout << "Post InvMixColumns State Matrix: " << endl;
+	print();
+}
+
+void test_SubBytesFunctions(){
+	//TODO
+	cout << "//-------Initial State Matrix-------//" << endl;
+	fill();
+	print();
+}
+
+void test_RotWordFunctions(){
+	//TODO
+	cout << "//-------Initial State Matrix-------//" << endl;
+	fill();
+	print();
+}
+
+void test_CipherFunctions(){
+	//TODO
+	cout << "//-------Initial State Matrix-------//" << endl;
+	fill();
+	print();
 }
