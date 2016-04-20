@@ -114,9 +114,9 @@ void test_CipherFunctions();
 //END TESTER FUNCTIONS
 
 //AES Functions
-void KeyExpansion();
+void KeyExpansion();			//COMPLETED
 
-void AddRoundKey(int round);	//TODO
+void AddRoundKey(int round);	//COMPLETED
 void SubBytes();				//TODO
 void ShiftRows();				//COMPLETED
 void MixColumns();				//COMPLETED
@@ -126,21 +126,59 @@ void InvMixColumns();			//COMPLETED
 void InvShiftRows();			//COMPLETED
 void InvSubBytes();				//TODO
 
-// The ShiftRows() function shifts the rows in the state to the left.
-// Each row is shifted with different offset.
-// Offset = Row number. So the first row is not shifted.
+
+//Updates the roundkey
+void KeyExpansion(){
+	int i, j;
+	byte temp[4], k;
+
+	// The first round key is the key itself.
+	for (i = 0; i < Nk; i++) {
+		RoundKey[i * 4] = K[i * 4];
+		RoundKey[i * 4 + 1] = K[i * 4 + 1];
+		RoundKey[i * 4 + 2] = K[i * 4 + 2];
+		RoundKey[i * 4 + 3] = K[i * 4 + 3];
+	}
+
+}
+
+//Xors the round key to the state
+void AddRoundKey(int round){
+	for (int i = 0; i < 4; i++){
+		for (int j = 0; j < 4; j++){
+			state[j][i] ^= RoundKey[round * Nb * 4 + i * Nb + j]; //^= applies the xor operation to the state
+		}
+	}
+}
+
+//TODO
+void SubBytes(){
+
+}
+
+//TODO
+void RotWord(){
+
+}
+
+//TODO
+void SubWord(){
+
+}
+
+//Shifts the values in state to the left
 void ShiftRows()
 {
 	byte temp;
 
-	// Shift first row 1 columns to left	
+	// Shift first row 1 to left	
 	temp = state[1][0];
 	state[1][0] = state[1][1];
 	state[1][1] = state[1][2];
 	state[1][2] = state[1][3];
 	state[1][3] = temp;
 
-	// Shift second row 2 columns to left	
+	// Shift second row 2 to left	
 	temp = state[2][0];
 	state[2][0] = state[2][2];
 	state[2][2] = temp;
@@ -149,7 +187,7 @@ void ShiftRows()
 	state[2][1] = state[2][3];
 	state[2][3] = temp;
 
-	// Shift third row 3 columns to left
+	// Shift third row 3 to left
 	temp = state[3][0];
 	state[3][0] = state[3][3];
 	state[3][3] = state[3][2];
@@ -157,7 +195,7 @@ void ShiftRows()
 	state[3][1] = temp;
 }
 
-// MixColumns function mixes the columns of the state matrix
+//MixColumns function mixes the columns of the state matrix
 void MixColumns()
 {
 	byte Tmp, Tm, t;
@@ -188,20 +226,18 @@ void InvMixColumns(){
 	}
 }
 
-// The ShiftRows() function shifts the rows in the state to the Right.
-// Each row is shifted with different offset.
-// Offset = Row number. So the first row is not shifted.
+//Undoes the ShiftRows Operation
 void InvShiftRows(){
 	byte temp;
 
-	//shift first row 1 columns to right	
+	//shift first row 1 to right	
 	temp = state[1][3];
 	state[1][3] = state[1][2];
 	state[1][2] = state[1][1];
 	state[1][1] = state[1][0];
 	state[1][0] = temp;
 
-	// shift second row 2 columns to right	
+	//shift second row 2 to right	
 	temp = state[2][0];
 	state[2][0] = state[2][2];
 	state[2][2] = temp;
@@ -210,13 +246,20 @@ void InvShiftRows(){
 	state[2][1] = state[2][3];
 	state[2][3] = temp;
 
-	// shift third row 3 columns to Right
+	// shift third row 3 to Right
 	temp = state[3][0];
 	state[3][0] = state[3][1];
 	state[3][1] = state[3][2];
 	state[3][2] = state[3][3];
 	state[3][3] = temp;
 }
+
+//TODO Undoes the SubBytes Operation
+void InvSubBytes(){
+
+}
+
+//----------------------------------------EXECUTION-------------------------------------------//
 
 //Function to determine the keylength used 128, 192 or 256 bits
 void PickKeyLength(){
@@ -247,7 +290,6 @@ void PickKeyLength(){
 	Nr = Nk + 6;
 }
 
-//----------------------------------------EXECUTION-------------------------------------------//
 void main(){
 	PickKeyLength();
 
@@ -256,7 +298,6 @@ void main(){
 
 	system("Pause");
 }
-
 
 //-----------------------------------------TESTER FUNCTIONS-----------------------------------//
 //fills the state matrix for testing
