@@ -126,12 +126,12 @@ void InvMixColumns();			//COMPLETED
 void InvShiftRows();			//COMPLETED
 void InvSubBytes();				//TODO
 
+void cipher();					//TODO
+void decipher();				//TODO
 
 //Updates the roundkey
 void KeyExpansion(){
-	int i, j;
-	byte temp[4], k;
-
+	int i;
 	// The first round key is the key itself.
 	for (i = 0; i < Nk; i++) {
 		RoundKey[i * 4] = K[i * 4];
@@ -290,13 +290,51 @@ void PickKeyLength(){
 	Nr = Nk + 6;
 }
 
+//TODO
+string encrpyt(string plntxt){
+	return plntxt;
+}
+
+//TODO
+string decrypt(string ciphtxt){
+	return ciphtxt;
+}
+
 void main(){
-	PickKeyLength();
+	string txt = "";
+	int testingMode = 1;//toggle value to turn on and off testing
+						//turning off testing triggers manual mode
 
-	test_ShiftRowFunctions();
-	test_MixColumnsFunctions();
+	cout << "Enter testing mode? (1 = yes, 2 = no): "; 
+	cin >> testingMode;
 
-	system("Pause");
+	//TESTER FUNCTIONS
+	if (testingMode == 1){
+		test_ShiftRowFunctions();
+		test_MixColumnsFunctions();
+		test_SubBytesFunctions();
+		test_RotWordFunctions();
+		test_CipherFunctions();
+		//END TESTER FUNCTIONS
+	}
+	else {
+		int n = 1;
+		PickKeyLength(); // pick key length from 128, 192, or 256 bit key
+		do{
+			cin.ignore();
+			cout << "Enter message to Encrypt: ";
+			getline(cin, txt);
+
+			cout << "Before Encryption: " << txt << endl;
+			txt = encrpyt(txt);
+			cout << "After Encryption: " << txt << endl;
+			txt = decrypt(txt);
+			cout << "After Decryption: " << txt << endl;
+
+			cout << endl << "Encrypt another message? (1 = yes, 0 = no): ";
+			cin >> n;
+		} while (n == 1);
+	}
 }
 
 //-----------------------------------------TESTER FUNCTIONS-----------------------------------//
@@ -315,7 +353,6 @@ void fill(){
 
 //prints contents of state matrix
 void print(){
-
 	//print state
 	for (int i = 0; i < 4; i++){
 		for (int j = 0; j < 4; j++){
@@ -327,6 +364,7 @@ void print(){
 }
 
 void test_ShiftRowFunctions(){
+	cout << "#----------Testing ShiftRow-----------#" << endl; 
 	cout << "//-------Initial State Matrix-------//" << endl;
 	fill();
 	print();
@@ -341,6 +379,8 @@ void test_ShiftRowFunctions(){
 }
 
 void test_MixColumnsFunctions(){
+
+	cout << "#--------Testing MixColumns----------#" << endl;
 	cout << "//-------Initial State Matrix-------//" << endl;
 	fill();
 	print();
@@ -355,22 +395,36 @@ void test_MixColumnsFunctions(){
 }
 
 void test_SubBytesFunctions(){
-	//TODO
+	cout << "#----------Testing SubBytes-----------#" << endl;
 	cout << "//-------Initial State Matrix-------//" << endl;
 	fill();
+	print();
+
+	SubBytes();
+	cout << "post SubBytes State Matrix: " << endl;
+
+	print();
+	InvSubBytes();
+	cout << "Post invSubBytes State Matrix: " << endl;
 	print();
 }
 
 void test_RotWordFunctions(){
 	//TODO
+	cout << "#----------Testing RotWord-----------#" << endl;
 	cout << "//-------Initial State Matrix-------//" << endl;
 	fill();
+	RotWord();
 	print();
 }
 
 void test_CipherFunctions(){
-	//TODO
-	cout << "//-------Initial State Matrix-------//" << endl;
-	fill();
-	print();
+	cout << "#-------Testing encrypt decrypt-------#" << endl;
+	string txt = "Super Secret, Secret String";
+
+	cout << "Before Encryption: " << txt << endl;
+	txt = encrpyt(txt);
+	cout << "After Encryption: " << txt << endl;
+	txt = decrypt(txt);
+	cout << "After Decryption: " << txt << endl;
 }
