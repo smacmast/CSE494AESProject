@@ -1,2 +1,6 @@
 ﻿  AES.cpp
+c:\users\spencer\documents\spencer\asu\semester 6\cse 494\cse494aesproject\aesproject\aesproject\aes.cpp(145): warning C4101: 'k' : unreferenced local variable
+c:\users\spencer\documents\spencer\asu\semester 6\cse 494\cse494aesproject\aesproject\aesproject\aes.cpp(417): warning C4018: '<' : signed/unsigned mismatch
+c:\users\spencer\documents\spencer\asu\semester 6\cse 494\cse494aesproject\aesproject\aesproject\aes.cpp(431): warning C4018: '<' : signed/unsigned mismatch
+c:\users\spencer\documents\spencer\asu\semester 6\cse 494\cse494aesproject\aesproject\aesproject\aes.cpp(504): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
   AESProject.vcxproj -> C:\Users\Spencer\Documents\Spencer\ASU\Semester 6\CSE 494\CSE494AESProject\AESProject\Debug\AESProject.exe
